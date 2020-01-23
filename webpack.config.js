@@ -1,7 +1,14 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+/* variables */
+/* global process __dirname module */
+const isProduction = process.argv.indexOf('-p') >= 0;
 const sourcePath = path.join(__dirname, "./src");
+
 // babel config
 const babelLoaderConfig = {
   loader: "babel-loader",
@@ -23,6 +30,23 @@ module.exports = {
         exclude: /node_modules/,
         use: [babelLoaderConfig],
       },
+      {
+        test: /\.css$/,
+        use: [
+          isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+          {
+            loader: "css-loader",
+          },
+        ],
+      },
+      {
+        test: /\.(svg|gif|jpe?g|png|eot|ttf|woff2?)$/,
+        loader: 'url-loader',
+        query: {
+          limit: 3000,
+          name: 'assets/[name].[ext]',
+        },
+      },
     ],
   },
   plugins: [
@@ -38,5 +62,16 @@ module.exports = {
         useShortDoctype: true,
       },
     }),
+    new MiniCssExtractPlugin({
+      disable: !isProduction,
+      filename: "[name][hash].css",
+      chunkFilename: "[name].[chunkhash:4].css",
+    })
   ],
+  resolve: {
+    extensions: [".js", ".ts"],
+    alias: {
+      src: path.resolve(__dirname, "src"),
+    },
+  }
 };
