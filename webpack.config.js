@@ -3,6 +3,7 @@ const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 /* variables */
@@ -63,6 +64,8 @@ module.exports = {
         useShortDoctype: true,
       },
     }),
+    /* as name suggest it only prettify console */
+    new FriendlyErrorsWebpackPlugin(),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       disable: !isProduction,
